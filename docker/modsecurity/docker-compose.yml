@@ -1,0 +1,15 @@
+services:
+  modsecurity-waf:
+    image: owasp/modsecurity-crs:nginx
+    container_name: modsecurity-waf
+
+    ports:
+      - "8080:80"
+
+    environment:
+      - MODSEC_AUDIT_LOG=/var/log/modsecurity/audit/audit.log
+      - MODSEC_AUDIT_LOG_FORMAT=JSON
+      - MODSEC_AUDIT_LOG_TYPE=Serial
+
+    volumes:
+      - ./logs:/var/log/modsecurity/audit

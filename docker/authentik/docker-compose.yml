@@ -1,0 +1,63 @@
+services:
+  postgresql:
+    image: docker.io/library/postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: authentik
+      POSTGRES_USER: authentik
+      POSTGRES_DB: authentik
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  redis:
+    image: docker.io/library/redis:alpine
+    restart: unless-stopped
+
+  authentik-server:
+    image: ghcr.io/goauthentik/server:latest
+    restart: unless-stopped
+    command: server
+    environment:
+      AUTHENTIK_SECRET_KEY: "supersecretkey"
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: authentik
+      AUTHENTIK_HOST_BROWSER: "http://192.168.56.107:9000"
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgresql
+      - redis
+    networks:
+      - default
+      - wazuh_network
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:latest
+    restart: unless-stopped
+    command: worker
+    environment:
+      AUTHENTIK_SECRET_KEY: "supersecretkey"
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: authentik
+      AUTHENTIK_HOST_BROWSER: "http://192.168.56.107:9000"
+    depends_on:
+      - postgresql
+      - redis
+    networks:
+      - default
+      - wazuh_network
+
+networks:
+  default:
+  wazuh_network:
+    external: true
+    name: single-node_default
+
+volumes:
+  database:

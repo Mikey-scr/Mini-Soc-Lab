@@ -1,0 +1,18 @@
+server.host: "0.0.0.0"
+server.port: 5601
+opensearch.hosts: https://wazuh.indexer:9200
+opensearch.ssl.verificationMode: certificate
+opensearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
+opensearch_security.multitenancy.enabled: false
+opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+server.ssl.enabled: false
+opensearch.ssl.certificateAuthorities: ["/usr/share/wazuh-dashboard/certs/root-ca.pem"]
+uiSettings.overrides.defaultRoute: /app/wazuh
+opensearch_security.auth.type: "openid"
+opensearch_security.openid.connect_url: "http://192.168.56.107:9000/application/o/soc-dash/.well-known/openid-configuration"
+opensearch_security.openid.client_id: "2ULwlrsgsB02CtETiP3A6ANXFMPsbVUQVHP9rAYr"
+opensearch_security.openid.client_secret: "p0qSnWJVyidVtPGWXsP18AwUovICxawxfiUJQa3jl5Lyh8z7fJ7aZctWpwOn1UZLSeMlV1RDQz4YfFYbIZVG1HXCA1Yp9rFyhCe4SuandwqVFT2f6EUxNfGJJ1a5QTjz"
+opensearch_security.openid.base_redirect_url: "http://192.168.56.107"
+opensearch_security.openid.scope: "openid profile email"
+opensearch_security.openid.verify_hostnames: false
+server.xsrf.allowlist: ["/_opendistro/_security/openid/login", "/_opendistro/_security/logout"]
